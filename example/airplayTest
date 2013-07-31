@@ -1,0 +1,74 @@
+#!/usr/local/bin/node
+
+var timeOut = 5000;
+
+
+//  Make sure you have those images in place
+
+var imageUrl1 = "https://www.google.com/images/srpr/logo4w.png"
+var fileEarth="./earth.jpg"
+var fileMoon="./moon.jpg"
+var fileMars="./mars.jpg"
+
+var argv = require('optimist')
+    .usage("Usage: $0 -n [airplay server name]")
+    .string('n', 'name')
+    .string(['t'])
+    .alias("n", "name")
+    .alias("t", "timeout")
+    .describe("n", "name of airplay server")
+    .describe("t", "timeout between images in milliseconds")
+    .argv;
+
+var browser = require('airplay').createBrowser();
+console.log('Looking for airplay devices');
+
+if(argv.t) {
+	timeOut = argv.t;
+	console.log('Timeout set to '+timeOut);
+}
+
+var timer = setTimeout(function() { console.log('Timed out. Exit.'); browser.stop();} ,timeOut);
+
+function moon(device, x){
+	return function(){
+        device.showImageFile(fileMoon,'Dissolve',0);
+		setTimeout(x, timeOut);
+	}
+}
+
+function mars(device, x){
+	return function(){
+        device.showImageFile(fileMars,'Dissolve',0);
+		if(x)setTimeout(x, timeOut);
+	}
+}
+function earth(device, x){
+	return function(){
+        device.showImageFile(fileEarth,'Dissolve',0);
+		//device.play(imageUrl1, 0);
+		setTimeout(x, timeOut);
+	}
+}
+
+function startTimer(){}
+
+browser.on('deviceOnline', function(device){
+	console.log('Found Airplay device : device id '+device.id+' / '+device.info_.name);
+	if(device.info_.name == argv.n || argv.n == undefined) {
+		console.log('\tThis is my device (or no specific device given).')
+		clearTimeout(timer)
+		console.log('\tName : '+device.info_.name)
+		console.log('\tIPs : '+device.info_.addresses)
+		var loop = function(){	
+			earth(device, moon(device, moon(device, loop)))()
+		}
+		loop()
+
+	} else {
+		console.log('\tThis is not my device. Skipping...')
+		device.close()
+	}
+});
+
+browser.start();

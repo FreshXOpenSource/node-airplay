@@ -10,9 +10,13 @@ Currently supported features:
 * AirPlay device discovery
 * Support for audio and video playback
 
+Implemented by FreshX
+
+* Photo playback (see ./examples)
+* airplay example (make sure to have images in place, see code)
+
 Coming soon (maybe):
 
-* Photo playback
 * Robust error handling
 * Better device information formatting (supported features/etc)
 
