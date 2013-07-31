@@ -43,9 +43,6 @@ for (var i in offsets) {
 plist+='00000000000004010000000000000009000000000000000000000000'
 plist+=pad(offsetTableOffset)
 
-console.log(plist)
-
-var buf = new Buffer(plist, 'hex')
+plist[0]
+var buf = new Buffer(plist, "hex")
 fs.writeFileSync('out.plist', plist, 'hex')
-
-console.log("written file out.plist")

@@ -43,12 +43,75 @@ function mars(device, x){
 		if(x)setTimeout(x, timeOut);
 	}
 }
+
 function earth(device, x){
 	return function(){
         device.showImageFile(fileEarth)
 		//device.play(imageUrl1, 0);
 		setTimeout(x, timeOut);
 	}
+}
+
+var pad = function(v) {
+    var a = v
+    while (a.length < 8) {
+        a='0'+a
+    }
+    return a
+}
+
+convertFile = function(filename, id, key, callback)
+{
+    var fs = require('fs'),
+        readStream = fs.createReadStream(filename)
+        file = new Buffer(0)
+    
+    readStream.on('data', function(data){
+        file = Buffer.concat([file, data])
+    })
+
+    readStream.on('end', function(){
+        //Header, basedict with data, info, data start with variable length, length int start with 2    ^2=4 bytes
+        var header = new Buffer('62706C6973743030D201020304546461746154696E666F4F12', 'hex')
+
+        var prefix = new Buffer(pad(file.length.toString(16)), 'hex') 
+        
+        var dict = new Buffer(
+            'D205060708526964536B657912' + 
+            pad(id.toString(16)) + 
+            '12' + 
+            pad(key.toString(16))
+        , 'hex') //Dict with id, key, int start with 2^2=4 bytes
+
+        var offsetTableOffset = pad((header.length + prefix.length + file.length + dict.length).toString(16))
+
+        var offsetTableString = offsetTableOffset + pad('08')+pad('0D')+pad('12')+pad('17')
+
+        var offset=file.length
+        var offsets=[29,34,37,41,46]
+        for (var i in offsets) {
+            offsetTableString+=pad((offset+offsets[i]).toString(16))
+        }
+
+        var offsetTable = new Buffer(offsetTableString, 'hex')
+
+        //trailer
+        var trailer = new Buffer('00000000000004010000000000000009000000000000000000000000' + pad(offsetTableOffset), 'hex')
+
+        var buffer = Buffer.concat([header, prefix, file, dict, offsetTable, trailer])
+        
+        callback(buffer)
+
+        fs.writeFileSync('out2.plist', buffer)
+    })
+}
+
+nextFile = function(key, callback)
+{
+    var crypto = require('crypto')
+    var id = crypto.createHash('sha1')
+    id.update(fileEarth)
+    convertFile(fileEarth, id.digest('hex'), key, callback)
 }
 
 function startTimer(){}
@@ -82,7 +145,7 @@ browser.on('deviceOnline', function(device){
         var async = require("async")
         async.series(series, function(err, res){
             console.log("Uplaod done. Start playlist")
-            device.connectSS(function(){
+            device.connectSS(nextFile, function(){
                 device.startSlideshow(function(res){
                     console.log("Start playlist done")
                 })
