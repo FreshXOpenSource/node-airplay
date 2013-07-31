@@ -21,7 +21,8 @@
   "dependencies": {
     "plist": ">=0.2.1",
     "mdns": ">=0.0.7",
-    "node-uuid": "~1.4.0"
+    "node-uuid": "~1.4.0",
+    "extend": "~1.1.3"
   },
   "scripts": {},
   "engines": {
