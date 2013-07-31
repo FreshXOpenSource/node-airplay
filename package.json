@@ -20,10 +20,10 @@
   "main": "./lib/airplay",
   "dependencies": {
     "plist": ">=0.2.1",
-    "mdns": ">=0.0.7"
+    "mdns": ">=0.0.7",
+    "node-uuid": "~1.4.0"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "engines": {
     "node": ">= 0.5.x"
   },
