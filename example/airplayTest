@@ -32,20 +32,20 @@ var timer = setTimeout(function() { console.log('Timed out. Exit.'); browser.sto
 
 function moon(device, x){
 	return function(){
-        device.showImageFile(fileMoon,'Dissolve',0);
+        device.showImageFile(fileMoon)
 		setTimeout(x, timeOut);
 	}
 }
 
 function mars(device, x){
 	return function(){
-        device.showImageFile(fileMars,'Dissolve',0);
+        device.showImageFile(fileMars)
 		if(x)setTimeout(x, timeOut);
 	}
 }
 function earth(device, x){
 	return function(){
-        device.showImageFile(fileEarth,'Dissolve',0);
+        device.showImageFile(fileEarth)
 		//device.play(imageUrl1, 0);
 		setTimeout(x, timeOut);
 	}
@@ -55,20 +55,45 @@ function startTimer(){}
 
 browser.on('deviceOnline', function(device){
 	console.log('Found Airplay device : device id '+device.id+' / '+device.info_.name);
-	if(device.info_.name == argv.n || argv.n == undefined) {
-		console.log('\tThis is my device (or no specific device given).')
-		clearTimeout(timer)
-		console.log('\tName : '+device.info_.name)
-		console.log('\tIPs : '+device.info_.addresses)
-		var loop = function(){	
-			earth(device, moon(device, mars(device, loop)))()
-		}
-		loop()
-
-	} else {
+	if(!(device.info_.name == argv.n || argv.n == undefined)) {
 		console.log('\tThis is not my device. Skipping...')
 		device.close()
+        return
 	}
+
+    console.log('\tThis is my device (or no specific device given).')
+	clearTimeout(timer)
+	console.log('\tName : '+device.info_.name)
+	console.log('\tIPs : '+device.info_.addresses)
+
+    device.connectPTTH(function(){
+        var series = [
+            function(callback){
+                device.loadImageFile(fileMoon, {}, callback)                
+            },
+            function(callback){
+                device.loadImageFile(fileMars, {}, callback)                
+            },
+            function(callback){
+                device.loadImageFile(fileEarth, {}, callback)                
+            }
+        ]
+
+        var async = require("async")
+        async.series(series, function(err, res){
+            console.log("Uplaod done. Start playlist")
+            device.connectSS(function(){
+                device.startSlideshow(function(res){
+                    console.log("Start playlist done")
+                })
+            }) 
+        })
+
+	    // var loop = function(){	
+	    // 	earth(device, moon(device, mars(device, loop)))()
+	    // }
+	    // loop()
+   })
 });
 
 browser.start();
