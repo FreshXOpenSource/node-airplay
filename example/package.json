@@ -2,8 +2,7 @@
   "name": "trackx-airplayTest",
   "version": "0.1.0",
   "dependencies": {
-    "airplay": "https://github.com/FreshXOpenSource/node-airplay.git",
-    "optimist": "~0.6.0",
-    "bufferjs": "~2.0.0"
+    "airplay": "https://github.com/FreshXOpenSource/node-airplay/tarball/master",
+    "optimist": "~0.6.0"
   }
 }
