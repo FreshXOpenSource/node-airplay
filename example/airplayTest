@@ -61,7 +61,7 @@ browser.on('deviceOnline', function(device){
 		console.log('\tName : '+device.info_.name)
 		console.log('\tIPs : '+device.info_.addresses)
 		var loop = function(){	
-			earth(device, moon(device, moon(device, loop)))()
+			earth(device, moon(device, mars(device, loop)))()
 		}
 		loop()
 
