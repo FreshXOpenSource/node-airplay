@@ -83,9 +83,9 @@ convertFile = function(filename, id, key, callback)
             pad(key.toString(16))
         , 'hex') //Dict with id, key, int start with 2^2=4 bytes
 
-        var offsetTableOffset = pad((header.length + prefix.length + file.length + dict.length).toString(16))
+        var offsetTableOffset = (header.length + prefix.length + file.length + dict.length).toString(16)
 
-        var offsetTableString = offsetTableOffset + pad('08')+pad('0D')+pad('12')+pad('17')
+        var offsetTableString = pad('08')+pad('0D')+pad('12')+pad('17')
 
         var offset=file.length
         var offsets=[29,34,37,41,46]
