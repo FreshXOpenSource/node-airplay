@@ -4,6 +4,7 @@
   "version": "0.0.4",
   "author": "Ben Vanik <ben.vanik@gmail.com>",
   "contributors": [],
+  "private": true,
   "repository": {
     "type": "git",
     "url": "https://github.com/FreshXOpenSource/node-airplay.git"
