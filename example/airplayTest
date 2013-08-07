@@ -71,7 +71,7 @@ nextFile = function(device)
 }
 
 function eventHandler(e){
-    // console.log(e)
+    console.log(e)
 }
 
 function startTimer(){}
@@ -102,20 +102,20 @@ browser.on('deviceOnline', function(device){
 //              }
         ]
 
-        var async = require("async")
-        async.series(series, function(err, res){
-            device.connectSS(nextFile(device), function(){
-                // console.log("Uplaod done. Start playlist")
-                device.startSlideshow(function(res){
-                    // console.log("Start playlist done")
-                })
-            }) 
-        })
+//         var async = require("async")
+//         async.series(series, function(err, res){
+//             device.connectSS(nextFile(device), function(){
+//                 // console.log("Uplaod done. Start playlist")
+//                 device.startSlideshow(function(res){
+//                     // console.log("Start playlist done")
+//                 })
+//             }) 
+//         })
 
-	    // var loop = function(){	
-	    // 	earth(device, moon(device, mars(device, loop)))()
-	    // }
-	    // loop()
+	    var loop = function(){	
+	    	earth(device, moon(device, mars(device, loop)))()
+	    }
+	    loop()
    })
 });
 
